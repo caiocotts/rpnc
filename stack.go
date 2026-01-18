@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-type Stack[T comparable] struct {
+type Stack[T any] struct {
 	data []T
 }
 
