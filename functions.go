@@ -15,7 +15,7 @@ func Add(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("+ error: " + err.Error())
 	}
-	stack.Push(strconv.FormatFloat(numbers[1]+numbers[0], 'g', -1, 64))
+	stack.Push(floatToString(numbers[1] + numbers[0]))
 	return nil
 }
 
@@ -24,7 +24,7 @@ func Subtract(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("- error: " + err.Error())
 	}
-	stack.Push(strconv.FormatFloat(numbers[1]-numbers[0], 'g', -1, 64))
+	stack.Push(floatToString(numbers[1] - numbers[0]))
 	return nil
 }
 
@@ -33,7 +33,7 @@ func Multiply(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("* error: " + err.Error())
 	}
-	stack.Push(strconv.FormatFloat(numbers[1]*numbers[0], 'g', -1, 64))
+	stack.Push(floatToString(numbers[1] * numbers[0]))
 	return nil
 }
 
@@ -42,7 +42,7 @@ func Divide(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("/ error: " + err.Error())
 	}
-	stack.Push(strconv.FormatFloat(numbers[1]/numbers[0], 'g', -1, 64))
+	stack.Push(floatToString(numbers[1] / numbers[0]))
 	return nil
 }
 
@@ -79,9 +79,13 @@ func Swap(stack *Stack[string]) error {
 		return errors.New("swap error: " + err.Error())
 	}
 
-	stack.Push(strconv.FormatFloat(numbers[0], 'g', -1, 64))
-	stack.Push(strconv.FormatFloat(numbers[1], 'g', -1, 64))
+	stack.Push(floatToString(numbers[0]))
+	stack.Push(floatToString(numbers[1]))
 	return nil
+}
+
+func floatToString(number float64) string {
+	return strconv.FormatFloat(number, 'g', -1, 64)
 }
 
 func pullFromStack(stack *Stack[string], numberOfValues int) ([]float64, error) {
@@ -89,7 +93,7 @@ func pullFromStack(stack *Stack[string], numberOfValues int) ([]float64, error) 
 		return nil, errors.New(TooFewArguments)
 	}
 	numbers := make([]float64, 0, numberOfValues)
-	for i := 0; i < numberOfValues; i++ {
+	for range numberOfValues {
 		value, err := stack.Pop()
 		if err != nil {
 			return nil, err

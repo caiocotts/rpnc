@@ -9,45 +9,75 @@ import (
 
 var defStyle = tcell.StyleDefault.Background(tcell.ColorReset).Foreground(tcell.ColorReset)
 
-func CloseDisplay(screen tcell.Screen) {
-	screen.Fini()
+type Display struct {
+	CursorXCoordinate int
+	screen            tcell.Screen
 }
 
-func InitDisplay() tcell.Screen {
+func NewDisplay() Display {
 	s, err := tcell.NewScreen()
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err = s.Init(); err != nil {
+	s.SetStyle(defStyle)
+
+	return Display{
+		screen: s,
+	}
+}
+func (d *Display) Init() {
+	if err := d.screen.Init(); err != nil {
 		log.Fatal(err)
 	}
-	s.SetStyle(defStyle)
-	return s
+}
+func (d *Display) Close() {
+	d.screen.Fini()
 }
 
-func PrintStack(calculator Calculator, screen tcell.Screen, numberOfLevels int) {
-	for i := 0; i < numberOfLevels; i++ {
+func (d *Display) PrintStack(calculator Calculator, numberOfLevels int) {
+	for i := range numberOfLevels {
 		y := numberOfLevels - i
 		stackLevel := i + 1
-		ClearLine(screen, y)
-		screen.PutStr(0, y, fmt.Sprintf("%d:", stackLevel))
+		d.ClearLine(y)
+		d.screen.PutStr(0, y, fmt.Sprintf("%d:", stackLevel))
 		val, err := calculator.Stack.Pop()
 		if err == nil {
-			screen.PutStr(5, y, val)
+			d.screen.PutStr(5, y, val)
 		}
 	}
-	screen.Show()
+	d.screen.Show()
 }
 
-func PrintMessage(screen tcell.Screen, message string) {
-	screen.PutStr(0, 0, message)
-	screen.Show()
+func (d *Display) PrintMessage(message string) {
+	d.ClearLine(0)
+	d.screen.PutStr(0, 0, message)
+	d.screen.Show()
 }
 
-func ClearLine(screen tcell.Screen, y int) {
-	width, _ := screen.Size()
-	for i := 0; i < width; i++ {
-		screen.PutStr(i, y, " ")
+func (d *Display) ClearLine(y int) {
+	width, _ := d.screen.Size()
+	for x := range width {
+		d.screen.PutStr(x, y, " ")
 	}
-	screen.Show()
+	d.screen.Show()
+}
+
+func (d *Display) PollEvent() tcell.Event {
+	return d.screen.PollEvent()
+}
+
+func (d *Display) TypeCharacterOnScreen(character string) {
+	d.screen.PutStr(d.CursorXCoordinate, 11, character)
+	d.CursorXCoordinate++
+	d.screen.Show()
+}
+
+func (d *Display) Backspace() {
+	if d.CursorXCoordinate < 1 {
+		d.screen.Show()
+		return
+	}
+	d.screen.PutStr(d.CursorXCoordinate-1, 11, " ")
+	d.CursorXCoordinate--
+	d.screen.Show()
 }

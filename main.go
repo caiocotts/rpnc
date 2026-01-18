@@ -8,13 +8,16 @@ import (
 )
 
 func main() {
-	calc := NewCalculator()
-	display := InitDisplay()
-	cursorPosition := 0
-	inputBuffer := Stack[string]{}
 	const numberOfLevelsToDisplay = 10
 
-	PrintStack(calc, display, numberOfLevelsToDisplay)
+	calc := NewCalculator()
+
+	display := NewDisplay()
+	display.Init()
+
+	inputBuffer := Stack[string]{}
+
+	display.PrintStack(calc, numberOfLevelsToDisplay)
 
 	for {
 		e := display.PollEvent()
@@ -22,55 +25,48 @@ func main() {
 		case *tcell.EventKey:
 			switch ev.Key() {
 			case tcell.KeyCtrlC:
-				CloseDisplay(display)
-				val, _ := calc.Stack.Pop()
-				if val != "" {
-					fmt.Println(val)
-				}
+				closeApplication(display, calc)
 				return
 			case tcell.KeyCtrlD:
 				err := calc.Enter("drop")
 				if err != nil {
-					PrintMessage(display, err.Error())
+					display.PrintMessage(err.Error())
 					break
 				}
-				PrintMessage(display, "---> drop")
-				PrintStack(calc, display, numberOfLevelsToDisplay)
-				break
+				display.PrintMessage("---> drop")
+				display.PrintStack(calc, numberOfLevelsToDisplay)
 			case tcell.KeyRune:
 				character := string(ev.Rune())
-				display.PutStr(cursorPosition, 11, character)
+				display.TypeCharacterOnScreen(character)
 				inputBuffer.Push(character)
-				cursorPosition++
-				break
 			case tcell.KeyEnter:
 				value := strings.Join(inputBuffer.ToSlice(), "")
-				ClearLine(display, 0)
+				display.ClearLine(0)
 				err := calc.Enter(value)
 				if err != nil {
-					PrintMessage(display, err.Error())
+					display.PrintMessage(err.Error())
 				} else {
 					if value == "" {
 						value = "dup"
 					}
-					PrintMessage(display, "---> "+value)
+					display.PrintMessage("---> " + value)
 				}
 				inputBuffer = Stack[string]{}
-				cursorPosition = 0
-				ClearLine(display, 11)
-				PrintStack(calc, display, numberOfLevelsToDisplay)
-				break
+				display.ClearLine(11)
+				display.CursorXCoordinate = 0
+				display.PrintStack(calc, numberOfLevelsToDisplay)
 			case tcell.KeyBackspace:
-				if cursorPosition < 1 {
-					break
-				}
-				display.PutStr(cursorPosition-1, 11, " ")
-				_, _ = inputBuffer.Pop()
-				cursorPosition--
-				break
+				display.Backspace()
+				inputBuffer.Pop()
 			}
-			break
 		}
-		display.Show()
+	}
+}
+
+func closeApplication(display Display, calc Calculator) {
+	display.Close()
+	val, _ := calc.Stack.Pop()
+	if val != "" {
+		fmt.Println(val)
 	}
 }
