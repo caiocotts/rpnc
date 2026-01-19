@@ -36,3 +36,7 @@ func (s Stack[T]) Empty() bool {
 func (s Stack[T]) ToSlice() []T {
 	return s.data
 }
+
+func (s *Stack[T]) Clear() {
+	s.data = make([]T, 0)
+}
