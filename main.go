@@ -7,9 +7,9 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-func main() {
-	const numberOfLevelsToDisplay = 10
+const numberOfLevelsToDisplay = 10
 
+func main() {
 	calc := NewCalculator()
 
 	display := NewDisplay()
@@ -24,46 +24,57 @@ func main() {
 		switch ev := e.(type) {
 		case *tcell.EventKey:
 			switch ev.Key() {
+			case tcell.KeyRune:
+				typeKeyIntoInputField(ev.Rune(), display, &inputBuffer)
+			case tcell.KeyEnter:
+				enterValueIntoCalculator(display, &calc, &inputBuffer)
+			case tcell.KeyBackspace:
+				display.Backspace()
+				inputBuffer.Pop()
 			case tcell.KeyCtrlC:
 				closeApplication(display, calc)
 				return
 			case tcell.KeyCtrlD:
-				err := calc.Enter("drop")
-				if err != nil {
-					display.PrintMessage(err.Error())
-					break
-				}
-				display.PrintMessage("---> drop")
-				display.PrintStack(calc, numberOfLevelsToDisplay)
-			case tcell.KeyRune:
-				character := ev.Rune()
-				display.InputCharacter(character)
-				inputBuffer.Push(string(character))
-			case tcell.KeyEnter:
-				value := strings.Join(inputBuffer.ToSlice(), "")
-				display.ClearLine(0)
-				err := calc.Enter(value)
-				if err != nil {
-					display.PrintMessage(err.Error())
-				} else {
-					if value == "" {
-						value = "dup"
-					}
-					display.PrintMessage("---> " + value)
-				}
-				inputBuffer = Stack[string]{}
-				display.ClearInput()
-				display.PrintStack(calc, numberOfLevelsToDisplay)
-			case tcell.KeyBackspace:
-				display.Backspace()
-				inputBuffer.Pop()
+				dropAValueFromTheStack(display, &calc)
 			}
 		}
 	}
 }
 
-func closeApplication(display Display, calc Calculator) {
-	display.Close()
+func dropAValueFromTheStack(d Display, calc *Calculator) {
+	err := calc.Enter("drop")
+	if err != nil {
+		d.PrintMessage(err.Error())
+		return
+	}
+	d.PrintMessage("---> drop")
+	d.PrintStack(*calc, numberOfLevelsToDisplay)
+}
+
+func enterValueIntoCalculator(d Display, calc *Calculator, inputBuffer *Stack[string]) {
+	value := strings.Join(inputBuffer.ToSlice(), "")
+	d.ClearLine(0)
+	err := calc.Enter(value)
+	if err != nil {
+		d.PrintMessage(err.Error())
+	} else {
+		if value == "" {
+			value = "dup"
+		}
+		d.PrintMessage("---> " + value)
+	}
+	inputBuffer.Clear()
+	d.ClearInput()
+	d.PrintStack(*calc, numberOfLevelsToDisplay)
+}
+
+func typeKeyIntoInputField(c rune, d Display, inputBuffer *Stack[string]) {
+	d.InputCharacter(c)
+	inputBuffer.Push(string(c))
+}
+
+func closeApplication(d Display, calc Calculator) {
+	d.Close()
 	val, _ := calc.Stack.Pop()
 	if val != "" {
 		fmt.Println(val)
