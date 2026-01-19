@@ -1,4 +1,4 @@
-module rpnc
+module github.com/caiocotts/rpnc
 
 go 1.25
 
