@@ -36,9 +36,9 @@ func main() {
 				display.PrintMessage("---> drop")
 				display.PrintStack(calc, numberOfLevelsToDisplay)
 			case tcell.KeyRune:
-				character := string(ev.Rune())
-				display.TypeCharacterOnScreen(character)
-				inputBuffer.Push(character)
+				character := ev.Rune()
+				display.InputCharacter(character)
+				inputBuffer.Push(string(character))
 			case tcell.KeyEnter:
 				value := strings.Join(inputBuffer.ToSlice(), "")
 				display.ClearLine(0)
@@ -52,8 +52,7 @@ func main() {
 					display.PrintMessage("---> " + value)
 				}
 				inputBuffer = Stack[string]{}
-				display.ClearLine(11)
-				display.CursorXCoordinate = 0
+				display.ClearInput()
 				display.PrintStack(calc, numberOfLevelsToDisplay)
 			case tcell.KeyBackspace:
 				display.Backspace()
