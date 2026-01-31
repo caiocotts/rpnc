@@ -74,7 +74,7 @@ var _ = Describe("Functions", func() {
 	})
 
 	Describe("Divide", func() {
-		DescribeTable("Divide values", func(a string, b string, expected string) {
+		DescribeTable("Dividing values", func(a string, b string, expected string) {
 			stack.Push(a)
 			stack.Push(b)
 			_ = Divide(&stack)
