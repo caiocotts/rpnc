@@ -28,7 +28,7 @@ var _ = Describe("Functions", func() {
 		)
 		It("should return an error on an incorrect number of arguments", func() {
 			err := Add(&stack)
-			Expect(err).To(Not(BeNil()))
+			Expect(err).ToNot(BeNil())
 		})
 	})
 
@@ -48,7 +48,7 @@ var _ = Describe("Functions", func() {
 		)
 		It("should return an error on an incorrect number of arguments", func() {
 			err := Subtract(&stack)
-			Expect(err).To(Not(BeNil()))
+			Expect(err).ToNot(BeNil())
 		})
 	})
 
@@ -69,7 +69,7 @@ var _ = Describe("Functions", func() {
 
 		It("should return an error on an incorrect number of arguments", func() {
 			err := Multiply(&stack)
-			Expect(err).To(Not(BeNil()))
+			Expect(err).ToNot(BeNil())
 		})
 	})
 
@@ -90,7 +90,7 @@ var _ = Describe("Functions", func() {
 
 		It("should return an error on an incorrect number of arguments", func() {
 			err := Divide(&stack)
-			Expect(err).To(Not(BeNil()))
+			Expect(err).ToNot(BeNil())
 		})
 	})
 
@@ -113,7 +113,7 @@ var _ = Describe("Functions", func() {
 
 		It("should return an error on an incorrect number of arguments", func() {
 			err := Drop(&stack)
-			Expect(err).To(Not(BeNil()))
+			Expect(err).ToNot(BeNil())
 		})
 	})
 
@@ -138,7 +138,7 @@ var _ = Describe("Functions", func() {
 
 		It("should return an error on an incorrect number of arguments", func() {
 			err := Dup(&stack)
-			Expect(err).To(Not(BeNil()))
+			Expect(err).ToNot(BeNil())
 		})
 	})
 
@@ -177,7 +177,71 @@ var _ = Describe("Functions", func() {
 
 		It("should return an error on an incorrect number of arguments", func() {
 			err := Divide(&stack)
-			Expect(err).To(Not(BeNil()))
+			Expect(err).ToNot(BeNil())
+		})
+	})
+
+	Describe("Roll", func() {
+		DescribeTable("when given an argument N and there are N number of elements on the stack", func(n string, expected []string) {
+			stack.Push("3")
+			stack.Push("4")
+			stack.Push("32")
+			stack.Push("7")
+			stack.Push("23")
+
+			stack.Push(n)
+
+			_ = Roll(&stack)
+
+			result := stack.ToSlice()
+
+			Expect(result).To(Equal(expected))
+		},
+			Entry("should do nothing when N is a negative number", "-1",
+				[]string{
+					"3",
+					"4",
+					"32",
+					"7",
+					"23",
+				}),
+			Entry("should do nothing when N is 0", "0",
+				[]string{
+					"3",
+					"4",
+					"32",
+					"7",
+					"23",
+				}),
+			Entry("should do nothing when N is 1", "1",
+				[]string{
+					"3",
+					"4",
+					"32",
+					"7",
+					"23",
+				}),
+			Entry("should shift levels 1 to 2 up by one level and bring the 3th element to level 1 when N is 3", "3",
+				[]string{
+					"3",
+					"4",
+					"7",
+					"23",
+					"32",
+				}),
+			Entry("should shift levels 1 to 4 up by one level and bring the 5th element to level 1 when N is 5", "5",
+				[]string{
+					"4",
+					"32",
+					"7",
+					"23",
+					"3",
+				},
+			),
+		)
+		It("should return an error on an incorrect number of arguments", func() {
+			err := Roll(&stack)
+			Expect(err).ToNot(BeNil())
 		})
 	})
 })

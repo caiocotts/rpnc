@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"math"
 	"strconv"
 )
 
@@ -15,7 +16,7 @@ func Add(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("+ error: " + err.Error())
 	}
-	stack.Push(floatToString(numbers[1] + numbers[0]))
+	stack.Push(floatToString(numbers[0] + numbers[1]))
 	return nil
 }
 
@@ -24,7 +25,7 @@ func Subtract(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("- error: " + err.Error())
 	}
-	stack.Push(floatToString(numbers[1] - numbers[0]))
+	stack.Push(floatToString(numbers[0] - numbers[1]))
 	return nil
 }
 
@@ -33,7 +34,7 @@ func Multiply(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("* error: " + err.Error())
 	}
-	stack.Push(floatToString(numbers[1] * numbers[0]))
+	stack.Push(floatToString(numbers[0] * numbers[1]))
 	return nil
 }
 
@@ -42,7 +43,7 @@ func Divide(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("/ error: " + err.Error())
 	}
-	stack.Push(floatToString(numbers[1] / numbers[0]))
+	stack.Push(floatToString(numbers[0] / numbers[1]))
 	return nil
 }
 
@@ -79,8 +80,30 @@ func Swap(stack *Stack[string]) error {
 		return errors.New("swap error: " + err.Error())
 	}
 
-	stack.Push(floatToString(numbers[0]))
 	stack.Push(floatToString(numbers[1]))
+	stack.Push(floatToString(numbers[0]))
+	return nil
+}
+
+func Roll(stack *Stack[string]) error {
+	n, err := pullFromStack(stack, 1)
+	if err != nil {
+		return errors.New("roll error: " + err.Error())
+	}
+	numOfLevelsToRoll := int(math.Round(n[0]))
+	if numOfLevelsToRoll <= 0 {
+		return nil
+	}
+	stackElements, err := pullFromStack(stack, numOfLevelsToRoll)
+	if err != nil {
+		return errors.New("roll error: " + err.Error())
+	}
+	bottomMostElement := stackElements[0]
+
+	for i := 1; i < len(stackElements); i++ {
+		stack.Push(floatToString(stackElements[i]))
+	}
+	stack.Push(floatToString(bottomMostElement))
 	return nil
 }
 
@@ -92,8 +115,8 @@ func pullFromStack(stack *Stack[string], numberOfValues int) ([]float64, error) 
 	if stack.Size() < numberOfValues {
 		return nil, errors.New(TooFewArguments)
 	}
-	numbers := make([]float64, 0, numberOfValues)
-	for range numberOfValues {
+	numbers := make([]float64, numberOfValues)
+	for i := numberOfValues - 1; i >= 0; i-- {
 		value, err := stack.Pop()
 		if err != nil {
 			return nil, err
@@ -102,7 +125,7 @@ func pullFromStack(stack *Stack[string], numberOfValues int) ([]float64, error) 
 		if err != nil {
 			return nil, err
 		}
-		numbers = append(numbers, number)
+		numbers[i] = number
 	}
 	return numbers, nil
 }
