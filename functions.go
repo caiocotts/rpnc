@@ -12,7 +12,7 @@ const ( // error messages
 )
 
 func Add(stack *Stack[string]) error {
-	numbers, err := pullFromStack(stack, 2)
+	numbers, err := pullFromStackAsNumbers(stack, 2)
 	if err != nil {
 		return errors.New("+ error: " + err.Error())
 	}
@@ -21,7 +21,7 @@ func Add(stack *Stack[string]) error {
 }
 
 func Subtract(stack *Stack[string]) error {
-	numbers, err := pullFromStack(stack, 2)
+	numbers, err := pullFromStackAsNumbers(stack, 2)
 	if err != nil {
 		return errors.New("- error: " + err.Error())
 	}
@@ -30,7 +30,7 @@ func Subtract(stack *Stack[string]) error {
 }
 
 func Multiply(stack *Stack[string]) error {
-	numbers, err := pullFromStack(stack, 2)
+	numbers, err := pullFromStackAsNumbers(stack, 2)
 	if err != nil {
 		return errors.New("* error: " + err.Error())
 	}
@@ -39,7 +39,7 @@ func Multiply(stack *Stack[string]) error {
 }
 
 func Divide(stack *Stack[string]) error {
-	numbers, err := pullFromStack(stack, 2)
+	numbers, err := pullFromStackAsNumbers(stack, 2)
 	if err != nil {
 		return errors.New("/ error: " + err.Error())
 	}
@@ -70,7 +70,7 @@ func Dup(stack *Stack[string]) error {
 }
 
 func Clear(stack *Stack[string]) error {
-	*stack = Stack[string]{}
+	stack.Clear()
 	return nil
 }
 
@@ -80,13 +80,13 @@ func Swap(stack *Stack[string]) error {
 		return errors.New("swap error: " + err.Error())
 	}
 
-	stack.Push(floatToString(numbers[1]))
-	stack.Push(floatToString(numbers[0]))
+	stack.Push(numbers[1])
+	stack.Push(numbers[0])
 	return nil
 }
 
 func Roll(stack *Stack[string]) error {
-	n, err := pullFromStack(stack, 1)
+	n, err := pullFromStackAsNumbers(stack, 1)
 	if err != nil {
 		return errors.New("roll error: " + err.Error())
 	}
@@ -101,9 +101,9 @@ func Roll(stack *Stack[string]) error {
 	bottomMostElement := stackElements[0]
 
 	for i := 1; i < len(stackElements); i++ {
-		stack.Push(floatToString(stackElements[i]))
+		stack.Push(stackElements[i])
 	}
-	stack.Push(floatToString(bottomMostElement))
+	stack.Push(bottomMostElement)
 	return nil
 }
 
@@ -111,21 +111,31 @@ func floatToString(number float64) string {
 	return strconv.FormatFloat(number, 'g', -1, 64)
 }
 
-func pullFromStack(stack *Stack[string], numberOfValues int) ([]float64, error) {
-	if stack.Size() < numberOfValues {
-		return nil, errors.New(TooFewArguments)
+func pullFromStackAsNumbers(stack *Stack[string], numberOfElements int) ([]float64, error) {
+	elements, err := pullFromStack(stack, numberOfElements)
+	if err != nil {
+		return nil, err
 	}
-	numbers := make([]float64, numberOfValues)
-	for i := numberOfValues - 1; i >= 0; i-- {
-		value, err := stack.Pop()
+	numbers := make([]float64, numberOfElements)
+	for i, element := range elements {
+		numbers[i], err = strconv.ParseFloat(element, 64)
 		if err != nil {
 			return nil, err
 		}
-		number, err := strconv.ParseFloat(value, 64)
-		if err != nil {
-			return nil, err
-		}
-		numbers[i] = number
 	}
 	return numbers, nil
+}
+
+func pullFromStack(stack *Stack[string], numberOfElements int) ([]string, error) {
+	if stack.Size() < numberOfElements {
+		return nil, errors.New(TooFewArguments)
+	}
+	elements := stack.ToSlice()[stack.Size()-numberOfElements:]
+	for range numberOfElements {
+		_, err := stack.Pop()
+		if err != nil {
+			return nil, err
+		}
+	}
+	return elements, nil
 }
