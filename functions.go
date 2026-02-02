@@ -8,7 +8,6 @@ import (
 
 const ( // error messages
 	TooFewArguments = "too few arguments"
-	StackEmpty      = "stack is empty"
 )
 
 func Add(stack *Stack[string]) error {
@@ -48,10 +47,11 @@ func Divide(stack *Stack[string]) error {
 }
 
 func Drop(stack *Stack[string]) error {
-	_, err := stack.Pop()
-	if err != nil && err.Error() == StackEmpty {
+	if stack.Empty() {
 		return errors.New("drop error: " + TooFewArguments)
-	} else if err != nil {
+	}
+	_, err := stack.Pop()
+	if err != nil {
 		return errors.New("drop error: " + err.Error())
 	}
 	return nil
