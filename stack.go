@@ -42,3 +42,7 @@ func (s Stack[T]) ToSlice() []T {
 func (s *Stack[T]) Clear() {
 	s.data = make([]T, 0)
 }
+
+func (s Stack[T]) Peek() T {
+	return s.data[s.Size()-1]
+}
