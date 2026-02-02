@@ -58,14 +58,10 @@ func Drop(stack *Stack[string]) error {
 }
 
 func Dup(stack *Stack[string]) error {
-	number, err := stack.Pop()
-	if err != nil && err.Error() == StackEmpty {
+	if stack.Empty() {
 		return errors.New("dup error: " + TooFewArguments)
-	} else if err != nil {
-		return errors.New("dup error: " + err.Error())
 	}
-	stack.Push(number)
-	stack.Push(number)
+	stack.Push(stack.Peek())
 	return nil
 }
 
