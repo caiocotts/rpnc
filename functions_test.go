@@ -26,9 +26,11 @@ var _ = Describe("Functions", func() {
 			Entry("should be able to add mixed float and whole numbers", "1", "1.5", "2.5"),
 			Entry("should be able to add floating point numbers", "1.5", "1.5", "3"),
 		)
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Add(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Add(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 
@@ -46,9 +48,11 @@ var _ = Describe("Functions", func() {
 			Entry("should be able to subtract mixed float and whole numbers", "1", "1.5", "-0.5"),
 			Entry("should be able to subtract two floating point numbers", "1.5", "1.5", "0"),
 		)
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Subtract(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Subtract(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 
@@ -66,10 +70,11 @@ var _ = Describe("Functions", func() {
 			Entry("should be able to multiply mixed float and whole numbers", "-1", "1.5", "-1.5"),
 			Entry("should be able to multiply two floating point numbers", "1.5", "1.5", "2.25"),
 		)
-
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Multiply(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Multiply(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 
@@ -87,10 +92,11 @@ var _ = Describe("Functions", func() {
 			Entry("should be able to divide mixed float and whole numbers", "1", "1.5", "0.6666666666666666"),
 			Entry("should be able to divide two floating point numbers", "-1.5", "1.5", "-1"),
 		)
-
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Divide(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Divide(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 
@@ -110,10 +116,11 @@ var _ = Describe("Functions", func() {
 
 			Expect(numbers).To(Equal(expected))
 		})
-
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Drop(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Drop(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 
@@ -135,10 +142,11 @@ var _ = Describe("Functions", func() {
 
 			Expect(numbers).To(Equal(expected))
 		})
-
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Dup(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Dup(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 
@@ -174,10 +182,11 @@ var _ = Describe("Functions", func() {
 
 			Expect(numbers).To(Equal(expected))
 		})
-
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Divide(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Divide(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 
@@ -239,9 +248,11 @@ var _ = Describe("Functions", func() {
 				},
 			),
 		)
-		It("should return an error on an incorrect number of arguments", func() {
-			err := Roll(&stack)
-			Expect(err).ToNot(BeNil())
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Roll(&stack)
+				Expect(err).ToNot(BeNil())
+			})
 		})
 	})
 })
