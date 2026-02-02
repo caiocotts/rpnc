@@ -93,13 +93,13 @@ func Roll(stack *Stack[string]) error {
 	if numOfLevelsToRoll <= 0 {
 		return nil
 	}
-	stackElements, err := pullFromStack(stack, numOfLevelsToRoll)
+	elements, err := pullFromStack(stack, numOfLevelsToRoll)
 	if err != nil {
 		return errors.New("roll error: " + err.Error())
 	}
-	bottomMostElement := stackElements[0]
-	for i := 1; i < len(stackElements); i++ {
-		stack.Push(stackElements[i])
+	bottomMostElement := elements[0]
+	for i := 1; i < len(elements); i++ {
+		stack.Push(elements[i])
 	}
 	stack.Push(bottomMostElement)
 	return nil

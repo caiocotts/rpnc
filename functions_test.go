@@ -13,7 +13,7 @@ var _ = Describe("Functions", func() {
 	})
 
 	Describe("Add", func() {
-		DescribeTable("Adding values together", func(a string, b string, expected string) {
+		DescribeTable("Adding values", func(a string, b string, expected string) {
 			stack.Push(a)
 			stack.Push(b)
 			_ = Add(&stack)
@@ -125,7 +125,7 @@ var _ = Describe("Functions", func() {
 	})
 
 	Describe("Dup", func() {
-		It("should duplicate the item at the first level of the stack once", func() {
+		It("should duplicate the element at the first level of the stack once", func() {
 			stack.Push("3")
 			stack.Push("4")
 			stack.Push("5")
@@ -151,7 +151,7 @@ var _ = Describe("Functions", func() {
 	})
 
 	Describe("Clear", func() {
-		It("should remove all values from the stack", func() {
+		It("should remove all elements from the stack", func() {
 			stack.Push("3")
 			stack.Push("4")
 			stack.Push("5")
@@ -165,7 +165,7 @@ var _ = Describe("Functions", func() {
 	})
 
 	Describe("Swap", func() {
-		It("should swap the values from level 1 and 2 of the stack", func() {
+		It("should swap the elements from level 1 and 2 of the stack", func() {
 			stack.Push("3")
 			stack.Push("4")
 			stack.Push("5")
