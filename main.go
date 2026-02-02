@@ -17,7 +17,8 @@ func main() {
 
 	inputBuffer := Stack[string]{}
 
-	display.PrintStack(calc, numberOfLevelsToDisplay)
+	display.PrintMessage("====(rpnc)====")
+	display.PrintStack(calc, numberOfLevelsToDisplay, true)
 
 	for {
 		e := display.PollEvent()
@@ -48,7 +49,7 @@ func dropAValueFromTheStack(d Display, calc *Calculator) {
 		return
 	}
 	d.PrintMessage("---> drop")
-	d.PrintStack(*calc, numberOfLevelsToDisplay)
+	d.PrintStack(*calc, numberOfLevelsToDisplay, false)
 }
 
 func enterValueIntoCalculator(d Display, calc *Calculator, inputBuffer *Stack[string]) {
@@ -65,7 +66,7 @@ func enterValueIntoCalculator(d Display, calc *Calculator, inputBuffer *Stack[st
 	}
 	inputBuffer.Clear()
 	d.ClearInput()
-	d.PrintStack(*calc, numberOfLevelsToDisplay)
+	d.PrintStack(*calc, numberOfLevelsToDisplay, false)
 }
 
 func typeKeyIntoInputField(c rune, d Display, inputBuffer *Stack[string]) {

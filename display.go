@@ -80,12 +80,17 @@ func (d *Display) Close() {
 	d.screen.Fini()
 }
 
-func (d *Display) PrintStack(calculator Calculator, numberOfLevels int) {
+func (d *Display) PrintStack(calculator Calculator, numberOfLevels int, refresh bool) {
 	for i := range numberOfLevels {
 		y := numberOfLevels - i
 		stackLevel := i + 1
-		d.ClearLine(y)
-		d.screen.PutStr(0, y, fmt.Sprintf("%d:", stackLevel))
+		if refresh {
+			d.ClearLine(y)
+			d.screen.PutStr(0, y, fmt.Sprintf("%d:", stackLevel))
+		} else {
+			width, _ := d.screen.Size()
+			d.ClearRangeInLine(y, 5, width)
+		}
 		val, err := calculator.Stack.Pop()
 		if err == nil {
 			d.screen.PutStr(5, y, val)
@@ -97,6 +102,13 @@ func (d *Display) PrintStack(calculator Calculator, numberOfLevels int) {
 func (d *Display) PrintMessage(message string) {
 	d.ClearLine(0)
 	d.screen.PutStr(0, 0, message)
+	d.screen.Show()
+}
+
+func (d *Display) ClearRangeInLine(y, xStart, xEnd int) {
+	for x := xStart; x <= xEnd; x++ {
+		d.screen.PutStr(x, y, " ")
+	}
 	d.screen.Show()
 }
 
