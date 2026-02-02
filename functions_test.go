@@ -159,9 +159,8 @@ var _ = Describe("Functions", func() {
 			_ = Clear(&stack)
 
 			numbers := stack.ToSlice()
-			expected := make([]string, 0)
 
-			Expect(numbers).To(Equal(expected))
+			Expect(numbers).To(BeEmpty())
 		})
 	})
 
@@ -230,7 +229,7 @@ var _ = Describe("Functions", func() {
 					"7",
 					"23",
 				}),
-			Entry("should shift levels 1 to 2 up by one level and bring the 3th element to level 1 when N is 3", "3",
+			Entry("should shift levels 1 to 2 up by one level and bring the 3rd element to level 1 when N is 3", "3",
 				[]string{
 					"3",
 					"4",
@@ -253,6 +252,33 @@ var _ = Describe("Functions", func() {
 				err := Roll(&stack)
 				Expect(err).ToNot(BeNil())
 			})
+		})
+	})
+
+	Describe("Rot", func() {
+		When("there are at least 3 elements on the stack", func() {
+			It("should shift levels 1 to 2 up by one level and bring the 3rd element to level 1", func() {
+				stack.Push("3")
+				stack.Push("4")
+				stack.Push("5")
+
+				_ = Rot(&stack)
+
+				elements := stack.ToSlice()
+				expected := []string{
+					"4",
+					"5",
+					"3",
+				}
+
+				Expect(elements).To(Equal(expected))
+			})
+		})
+	})
+	When("an incorrect number of arguments is passed", func() {
+		It("should return an error", func() {
+			err := Rot(&stack)
+			Expect(err).ToNot(BeNil())
 		})
 	})
 })

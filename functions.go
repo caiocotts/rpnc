@@ -79,7 +79,6 @@ func Swap(stack *Stack[string]) error {
 	if err != nil {
 		return errors.New("swap error: " + err.Error())
 	}
-
 	stack.Push(numbers[1])
 	stack.Push(numbers[0])
 	return nil
@@ -99,9 +98,24 @@ func Roll(stack *Stack[string]) error {
 		return errors.New("roll error: " + err.Error())
 	}
 	bottomMostElement := stackElements[0]
-
 	for i := 1; i < len(stackElements); i++ {
 		stack.Push(stackElements[i])
+	}
+	stack.Push(bottomMostElement)
+	return nil
+}
+
+func Rot(stack *Stack[string]) error {
+	if stack.Size() < 3 {
+		return errors.New("rot error: " + TooFewArguments)
+	}
+	elements, err := pullFromStack(stack, 3)
+	if err != nil {
+		return errors.New("rot error: " + err.Error())
+	}
+	bottomMostElement := elements[0]
+	for i := 1; i < 3; i++ {
+		stack.Push(elements[i])
 	}
 	stack.Push(bottomMostElement)
 	return nil

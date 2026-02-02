@@ -14,6 +14,7 @@ var functions = map[string]func(stack *Stack[string]) error{
 	"clear": Clear,
 	"swap":  Swap,
 	"roll":  Roll,
+	"rot":   Rot,
 }
 
 type Calculator struct {
