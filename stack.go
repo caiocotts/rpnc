@@ -16,9 +16,8 @@ func (s *Stack[T]) Pop() (T, error) {
 	if s.Empty() {
 		return *new(T), errors.New("stack is empty")
 	}
-	size := len(s.data)
-	item := s.data[size-1]
-	s.data = s.data[0 : size-1]
+	item := s.data[s.Size()-1]
+	s.data = s.data[0 : s.Size()-1]
 	return item, nil
 }
 
