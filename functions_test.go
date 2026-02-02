@@ -151,7 +151,7 @@ var _ = Describe("Functions", func() {
 			_ = Clear(&stack)
 
 			numbers := stack.ToSlice()
-			var expected []string
+			expected := make([]string, 0)
 
 			Expect(numbers).To(Equal(expected))
 		})

@@ -34,7 +34,9 @@ func (s Stack[T]) Empty() bool {
 }
 
 func (s Stack[T]) ToSlice() []T {
-	return s.data
+	slc := make([]T, s.Size())
+	copy(slc, s.data)
+	return slc
 }
 
 func (s *Stack[T]) Clear() {
