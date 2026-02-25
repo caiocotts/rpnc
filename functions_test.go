@@ -12,6 +12,12 @@ var _ = Describe("Functions", func() {
 		stack = Stack[string]{}
 	})
 
+	/*
+		####################################
+		####### Arithmetic Functions #######
+		####################################
+	*/
+
 	Describe("Add", func() {
 		DescribeTable("Adding values", func(a string, b string, expected string) {
 			stack.Push(a)
@@ -99,6 +105,91 @@ var _ = Describe("Functions", func() {
 			})
 		})
 	})
+
+	Describe("Power", func() {
+		DescribeTable("Exponentiation of values", func(a string, b string, expected string) {
+			stack.Push(a)
+			stack.Push(b)
+			_ = Power(&stack)
+
+			result, _ := stack.Pop()
+
+			Expect(result).To(Equal(expected))
+		},
+			Entry("should be able to exponentiate whole numbers", "2", "3", "8"),
+			Entry("should be able to exponentiate mixed float and whole numbers", "4", "0.5", "2"),
+			Entry("should be able to exponentiate two floating point numbers", "9", "0.5", "3"),
+		)
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Power(&stack)
+				Expect(err).ToNot(BeNil())
+			})
+		})
+	})
+
+	Describe("Square", func() {
+		DescribeTable("Squaring values", func(a string, expected string) {
+			stack.Push(a)
+			_ = Square(&stack)
+
+			result, _ := stack.Pop()
+
+			Expect(result).To(Equal(expected))
+		},
+			Entry("should be able to square whole numbers", "3", "9"),
+			Entry("should be able to square negative whole numbers", "-4", "16"),
+			Entry("should be able to square floating point numbers", "1.5", "2.25"),
+		)
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Square(&stack)
+				Expect(err).ToNot(BeNil())
+			})
+		})
+	})
+
+	Describe("SquareRoot", func() {
+		DescribeTable("Square rooting values", func(a string, expected string) {
+			stack.Push(a)
+			_ = SquareRoot(&stack)
+
+			result, _ := stack.Pop()
+
+			Expect(result).To(Equal(expected))
+		},
+			Entry("should be able to square root whole numbers", "9", "3"),
+			Entry("should return NaN when square rooting negative whole numbers", "-4", "NaN"), // maybe one day......
+			Entry("should be able to square root floating point numbers", "1.5", "2.25"),
+		)
+	})
+
+	Describe("Inverse", func() {
+		DescribeTable("Inverting values", func(a string, expected string) {
+			stack.Push(a)
+			_ = Inverse(&stack)
+
+			result, _ := stack.Pop()
+
+			Expect(result).To(Equal(expected))
+		},
+			Entry("should be able to invert whole numbers", "4", "0.25"),
+			Entry("should be able to invert negative whole numbers", "-2", "-0.5"),
+			Entry("should be able to invert floating point numbers", "0.5", "2"),
+		)
+		When("an incorrect number of arguments is passed", func() {
+			It("should return an error", func() {
+				err := Inverse(&stack)
+				Expect(err).ToNot(BeNil())
+			})
+		})
+	})
+
+	/*
+		############################################
+		####### Stack Manipulation Functions #######
+		############################################
+	*/
 
 	Describe("Drop", func() {
 		It("should pop the stack once", func() {

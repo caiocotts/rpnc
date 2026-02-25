@@ -46,6 +46,42 @@ func Divide(stack *Stack[string]) error {
 	return nil
 }
 
+func Power(stack *Stack[string]) error {
+	numbers, err := pullFromStackAsNumbers(stack, 2)
+	if err != nil {
+		return errors.New("^ error: " + err.Error())
+	}
+	stack.Push(floatToString(math.Pow(numbers[0], numbers[1])))
+	return nil
+}
+
+func Square(stack *Stack[string]) error {
+	numbers, err := pullFromStackAsNumbers(stack, 1)
+	if err != nil {
+		return errors.New("sq error: " + err.Error())
+	}
+	stack.Push(floatToString(math.Pow(numbers[0], 2)))
+	return nil
+}
+
+func Inverse(stack *Stack[string]) error {
+	numbers, err := pullFromStackAsNumbers(stack, 1)
+	if err != nil {
+		return errors.New("inv error: " + err.Error())
+	}
+	stack.Push(floatToString(1 / numbers[0]))
+	return nil
+}
+
+func SquareRoot(stack *Stack[string]) error {
+	numbers, err := pullFromStackAsNumbers(stack, 1)
+	if err != nil {
+		return errors.New("sqrt error: " + err.Error())
+	}
+	stack.Push(floatToString(math.Sqrt(numbers[0])))
+	return nil
+}
+
 func Drop(stack *Stack[string]) error {
 	if stack.Empty() {
 		return errors.New("drop error: " + TooFewArguments)
