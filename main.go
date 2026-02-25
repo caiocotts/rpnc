@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
@@ -11,7 +12,7 @@ const numberOfLevelsToDisplay = 10
 
 func main() {
 	calc := NewCalculator()
-
+	LoadStack(&calc)
 	display := NewDisplay()
 	display.Init()
 
@@ -76,6 +77,10 @@ func typeKeyIntoInputField(c rune, d Display, inputBuffer *Stack[string]) {
 
 func closeApplication(d Display, calc Calculator) {
 	d.Close()
+	err := SaveStack(calc)
+	if err != nil {
+		log.Fatal(err)
+	}
 	val, _ := calc.Stack.Pop()
 	if val != "" {
 		fmt.Println(val)
